@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ada yang mau aku tanyain… 💌</title>
+<meta name="description" content="Buka pelan-pelan ya." />
+<meta property="og:title" content="Ada yang mau aku tanyain… 💌" />
+<meta property="og:description" content="Buka pelan-pelan ya." />
+<meta name="theme-color" content="#12030a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<script>
+  /* =========================================================
+     ✏️  EDIT DI SINI AJA
+     ========================================================= */
+  window.CONFIG = {
+    dari: "Aku",                       // nama kamu
+    untuk: "Kamu",                     // nama dia (bisa diganti lewat link: ?to=Nama)
+    whatsapp: "6281234567890",         // nomor WA kamu, format 62xxx (tanpa + dan 0 di depan)
+    pembuka: "Ada satu hal yang dari kemarin pengen banget aku tanyain ke kamu…",
+    pertanyaan: "Mau ketemuan sama aku?",
+    tempat: [
+      { emoji: "☕", nama: "Ngopi santai" },
+      { emoji: "🍝", nama: "Dinner" },
+      { emoji: "🌇", nama: "Jalan sore" },
+      { emoji: "🎬", nama: "Nonton" },
+    ],
+  };
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<style>
+  :root{
+    --wine:#12030a; --rose:#ff4d6d; --blush:#ffb3c1; --cream:#fff4f0;
+    --glass:rgba(255,255,255,.07); --line:rgba(255,255,255,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--wine);color:var(--cream);
+    font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+  body{background:radial-gradient(120% 80% at 50% 30%,#3a0a1c 0%,#12030a 70%)}
+  #scene{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .vignette{position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 40%,transparent 45%,rgba(0,0,0,.55) 100%)}
+  .grain{position:fixed;inset:-50%;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 1s steps(4) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}50%{transform:translate(-3%,2%)}100%{transform:translate(2%,-3%)}}
+
+  .stage{position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;
+    padding:24px 18px calc(28px + env(safe-area-inset-bottom));pointer-events:none}
+  .card{pointer-events:auto;width:min(440px,100%);padding:28px 26px;border-radius:28px;
+    background:var(--glass);border:1px solid var(--line);
+    backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12);
+    text-align:center;display:none;opacity:0;transform:translateY(24px) scale(.98);
+    transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .card.show{display:block}
+  .card.in{opacity:1;transform:none}
+
+  .eyebrow{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--blush);opacity:.85}
+  h1,h2{font-family:"Fraunces",serif;font-weight:400;line-height:1.1}
+  h1{font-size:clamp(34px,9vw,46px);margin:10px 0 6px}
+  h1 em,h2 em{font-style:italic;color:var(--blush)}
+  h2{font-size:clamp(28px,7.5vw,38px);margin:8px 0 18px}
+  p.lead{font-size:15px;line-height:1.6;opacity:.82;min-height:3.2em}
+  .sub{font-size:13px;opacity:.6;margin-top:14px}
+
+  .btn{appearance:none;border:0;cursor:pointer;font:600 15px "Plus Jakarta Sans",sans-serif;
+    padding:15px 28px;border-radius:999px;transition:transform .25s ease,box-shadow .25s ease,background .25s}
+  .btn:active{transform:scale(.96)}
+  .btn-primary{color:#fff;background:linear-gradient(135deg,#ff6b8b,#e0123e);
+    box-shadow:0 10px 30px -6px rgba(255,45,85,.7),inset 0 1px 0 rgba(255,255,255,.35)}
+  .btn-primary:hover{box-shadow:0 14px 40px -6px rgba(255,45,85,.9),inset 0 1px 0 rgba(255,255,255,.35)}
+  .btn-ghost{color:var(--cream);background:rgba(255,255,255,.08);border:1px solid var(--line)}
+  .row{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:22px;flex-wrap:wrap}
+  #yesBtn{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+  #noBtn{transition:left .35s cubic-bezier(.3,1.4,.5,1),top .35s cubic-bezier(.3,1.4,.5,1)}
+  #noBtn.flying{position:fixed;z-index:20}
+
+  .field{text-align:left;margin-top:16px}
+  .field label{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;margin-bottom:8px}
+  .field input,.field select{width:100%;padding:13px 14px;border-radius:14px;color:var(--cream);
+    background:rgba(255,255,255,.06);border:1px solid var(--line);font:500 15px "Plus Jakarta Sans",sans-serif;
+    color-scheme:dark;outline:none}
+  .field input:focus,.field select:focus{border-color:var(--blush)}
+  .two{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+  .chips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .chip{padding:13px 10px;border-radius:14px;cursor:pointer;background:rgba(255,255,255,.06);
+    border:1px solid var(--line);font:500 14px "Plus Jakarta Sans",sans-serif;color:var(--cream);
+    transition:all .2s}
+  .chip.on{background:rgba(255,77,109,.22);border-color:var(--rose);box-shadow:0 0 0 3px rgba(255,77,109,.15)}
+  .full{width:100%;margin-top:22px}
+
+  #loader{position:fixed;inset:0;display:grid;place-items:center;background:var(--wine);z-index:50;transition:opacity .8s}
+  #loader.hide{opacity:0;pointer-events:none}
+  .pulse{width:14px;height:14px;border-radius:50%;background:var(--rose);box-shadow:0 0 30px var(--rose);
+    animation:pl 1s ease-in-out infinite}
+  @keyframes pl{50%{transform:scale(1.8);opacity:.5}}
+  .caret{display:inline-block;width:1px;height:1em;background:var(--blush);vertical-align:-2px;margin-left:2px;animation:bl 1s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+  .toast{position:fixed;left:50%;top:22px;transform:translateX(-50%) translateY(-80px);padding:10px 16px;border-radius:999px;
+    background:rgba(255,255,255,.12);border:1px solid var(--line);backdrop-filter:blur(10px);font-size:13px;transition:transform .4s;z-index:30}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+<div class="grain"></div>
+<div id="loader"><div class="pulse"></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="stage">
+  <!-- 1. Intro -->
+  <section class="card" id="s-intro">
+    <div class="eyebrow">Untuk</div>
+    <h1><em id="toName">Kamu</em></h1>
+    <p class="lead">Ada pesan kecil buat kamu.<br/>Bukanya pelan-pelan ya 🤍</p>
+    <div class="row"><button class="btn btn-primary" id="openBtn">Buka pesannya</button></div>
+  </section>
+
+  <!-- 2. Pertanyaan -->
+  <section class="card" id="s-ask">
+    <div class="eyebrow">Dari <span id="fromName">Aku</span></div>
+    <p class="lead" id="typed" style="margin-top:12px"></p>
+    <h2 id="question" style="opacity:0;transition:opacity .8s"></h2>
+    <div class="row" id="choices" style="opacity:0;transition:opacity .8s">
+      <button class="btn btn-primary" id="yesBtn">Mau! 💖</button>
+      <button class="btn btn-ghost" id="noBtn">Nggak</button>
+    </div>
+  </section>
+
+  <!-- 3. Atur rencana -->
+  <section class="card" id="s-plan">
+    <div class="eyebrow">Yeay! 🥹</div>
+    <h2 style="margin-bottom:4px">Kapan & di mana <em>enaknya?</em></h2>
+    <div class="field">
+      <label>Kapan</label>
+      <div class="two">
+        <input type="date" id="date" />
+        <select id="time">
+          <option>10:00</option><option>13:00</option><option>16:00</option>
+          <option selected>19:00</option><option>20:00</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Mau ngapain</label>
+      <div class="chips" id="chips"></div>
+    </div>
+    <button class="btn btn-primary full" id="sendBtn">Kirim jawaban 💌</button>
+  </section>
+
+  <!-- 4. Selesai -->
+  <section class="card" id="s-done">
+    <div class="eyebrow">Udah aku catat</div>
+    <h2>Sampai <em>ketemu</em> ya ✨</h2>
+    <p class="lead" id="summary"></p>
+    <div class="row"><button class="btn btn-ghost" id="againBtn">Kirim ulang</button></div>
+  </section>
+</div>
+
+<!-- ============ UI ============ -->
+<script>
+(() => {
+  const C = window.CONFIG;
+  const $ = (id) => document.getElementById(id);
+  const q = new URLSearchParams(location.search);
+  const nama = (q.get("to") || C.untuk).trim();
+  $("toName").textContent = nama;
+  $("fromName").textContent = C.dari;
+  $("question").textContent = C.pertanyaan;
+
+  let current = null;
+  function show(id) {
+    if (current) { const o = current; o.classList.remove("in"); setTimeout(() => o.classList.remove("show"), 500); }
+    const el = $(id);
+    setTimeout(() => { el.classList.add("show"); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in"))); },
+      current ? 520 : 0);
+    current = el;
+  }
+  const toast = (t) => { const el = $("toast"); el.textContent = t; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 2200); };
+
+  // suara "ting" lembut
+  let actx;
+  function chime(notes = [659, 830, 988]) {
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      notes.forEach((f, i) => {
+        const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.09;
+        o.type = "sine"; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.12, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 1.5);
+      });
+    } catch (e) {}
+  }
+
+  function typeText(el, text, done) {
+    el.innerHTML = ""; let i = 0; const caret = '<span class="caret"></span>';
+    const tick = () => { el.innerHTML = text.slice(0, i) + caret; if (i++ < text.length) setTimeout(tick, 38); else { el.innerHTML = text; done && done(); } };
+    tick();
+  }
+
+  // 1 → 2
+  $("openBtn").onclick = () => {
+    chime([523, 659]);
+    window.Love3D?.focus();
+    show("s-ask");
+    setTimeout(() => typeText($("typed"), C.pembuka, () => {
+      $("question").style.opacity = 1;
+      setTimeout(() => ($("choices").style.opacity = 1), 500);
+    }), 700);
+  };
+
+  // tombol "Nggak" yang kabur
+  const no = $("noBtn"), yes = $("yesBtn");
+  const noTexts = ["Nggak", "Yakin? 🥺", "Coba pikir lagi", "Masa sih…", "Ayolah 😭", "Pencet yang satunya aja", "Nggak bisa 😌"];
+  let dodges = 0;
+  function dodge(e) {
+    e && e.preventDefault();
+    dodges++;
+    const r = no.getBoundingClientRect();
+    if (!no.classList.contains("flying")) { no.style.left = r.left + "px"; no.style.top = r.top + "px"; no.classList.add("flying"); }
+    const pad = 16, w = r.width, h = r.height;
+    requestAnimationFrame(() => {
+      no.style.left = pad + Math.random() * (innerWidth - w - pad * 2) + "px";
+      no.style.top = pad + Math.random() * (innerHeight * 0.6 - h) + "px";
+    });
+    no.textContent = noTexts[Math.min(dodges, noTexts.length - 1)];
+    yes.style.transform = `scale(${Math.min(1 + dodges * 0.12, 1.8)})`;
+    window.Love3D?.wobble();
+  }
+  no.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") dodge(e); });
+  no.addEventListener("pointerdown", dodge);
+  no.addEventListener("click", dodge);
+
+  // 2 → 3
+  yes.onclick = () => {
+    chime([659, 830, 988, 1319]);
+    window.Love3D?.burst();
+    no.style.display = "none";
+    setTimeout(() => show("s-plan"), 1100);
+  };
+
+  // rencana
+  const d = $("date"), today = new Date();
+  const iso = (x) => new Date(x.getTime() - x.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+  d.min = iso(today);
+  d.value = iso(new Date(today.getTime() + 864e5 * ((6 - today.getDay() + 7) % 7 || 7))); // Sabtu terdekat
+  let pick = C.tempat[0]?.nama;
+  C.tempat.forEach((t, i) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (i === 0 ? " on" : "");
+    b.textContent = `${t.emoji} ${t.nama}`;
+    b.onclick = () => { document.querySelectorAll(".chip").forEach((c) => c.classList.remove("on")); b.classList.add("on"); pick = t.nama; chime([880]); };
+    $("chips").appendChild(b);
+  });
+
+  function message() {
+    const tgl = new Date(d.value + "T00:00").toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" });
+    return { tgl, text: `Hai ${C.dari}! Aku mau ketemuan 💖\n\n📅 ${tgl}\n⏰ ${$("time").value}\n📍 ${pick}\n\n— ${nama}` };
+  }
+  function send() {
+    const m = message();
+    const url = `https://wa.me/${C.whatsapp}?text=${encodeURIComponent(m.text)}`;
+    window.open(url, "_blank");
+    $("summary").innerHTML = `${m.tgl} · ${$("time").value}<br/>${pick}`;
+  }
+  $("sendBtn").onclick = () => {
+    if (!d.value) return toast("Pilih tanggalnya dulu ya 🙏");
+    chime([784, 988, 1175]); window.Love3D?.burst(); send(); show("s-done");
+  };
+  $("againBtn").onclick = send;
+
+  // mulai
+  const start = () => { $("loader").classList.add("hide"); show("s-intro"); };
+  let started = false;
+  const go = () => { if (!started) { started = true; start(); } };
+  window.addEventListener("love3d-ready", go);
+  setTimeout(go, 3500); // fallback kalau 3D gagal dimuat
+})();
+</script>
+
+<!-- ============ 3D ============ -->
+<script type="module">
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+const canvas = document.getElementById("scene");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x12030a);
+scene.fog = new THREE.FogExp2(0x12030a, 0.06);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(0, 0, 9);
+
+// ---- Lampu
+const key = new THREE.DirectionalLight(0xffe2e8, 2.2); key.position.set(3, 4, 5); scene.add(key);
+const rim = new THREE.PointLight(0xff2d6f, 40, 20); rim.position.set(-3, 1, -2.5); scene.add(rim);
+const rim2 = new THREE.PointLight(0xffa0b8, 25, 20); rim2.position.set(3, -2, -2); scene.add(rim2);
+scene.add(new THREE.AmbientLight(0x401020, 0.6));
+
+// ---- Bentuk hati
+function heartGeo(seg = 48, bevelSeg = 14) {
+  const s = new THREE.Shape();
+  s.moveTo(5, 5);
+  s.bezierCurveTo(5, 5, 4, 0, 0, 0);
+  s.bezierCurveTo(-6, 0, -6, 7, -6, 7);
+  s.bezierCurveTo(-6, 11, -3, 15.4, 5, 19);
+  s.bezierCurveTo(12, 15.4, 16, 11, 16, 7);
+  s.bezierCurveTo(16, 7, 16, 0, 10, 0);
+  s.bezierCurveTo(7, 0, 5, 5, 5, 5);
+  const g = new THREE.ExtrudeGeometry(s, {
+    depth: 3.2, bevelEnabled: true, bevelSegments: bevelSeg, steps: 1,
+    bevelSize: 2.6, bevelThickness: 3.2, curveSegments: seg,
+  });
+  g.center(); g.rotateZ(Math.PI); g.computeVertexNormals();
+  return g;
+}
+
+const heartGroup = new THREE.Group();
+scene.add(heartGroup);
+const heart = new THREE.Mesh(
+  heartGeo(),
+  new THREE.MeshPhysicalMaterial({
+    color: 0xd90f3c, roughness: 0.18, metalness: 0.05,
+    clearcoat: 1, clearcoatRoughness: 0.04,
+    sheen: 1, sheenColor: new THREE.Color(0xff7aa0), sheenRoughness: 0.4,
+    emissive: 0x3a0010, emissiveIntensity: 0.6, envMapIntensity: 1.3,
+  })
+);
+heart.scale.setScalar(0.085);
+heartGroup.add(heart);
+
+// glow di belakang hati
+function glowTex(inner = "rgba(255,90,130,1)") {
+  const c = document.createElement("canvas"); c.width = c.height = 128;
+  const x = c.getContext("2d"), gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, inner); gr.addColorStop(0.35, "rgba(255,60,110,.35)"); gr.addColorStop(1, "rgba(0,0,0,0)");
+  x.fillStyle = gr; x.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex(), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.55 }));
+halo.scale.set(6, 6, 1); halo.position.z = -1.2; heartGroup.add(halo);
+
+// ---- Hati-hati kecil melayang (instanced)
+const N = 70;
+const mini = new THREE.InstancedMesh(
+  heartGeo(16, 4),
+  new THREE.MeshPhysicalMaterial({ color: 0xff4d74, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, emissive: 0x400012, envMapIntensity: 1.1 }),
+  N
+);
+scene.add(mini);
+const P = [];
+const rnd = (a, b) => a + Math.random() * (b - a);
+for (let i = 0; i < N; i++) {
+  const base = new THREE.Vector3(rnd(-0.08, 0.08), rnd(0.15, 0.45), 0);
+  P.push({
+    pos: new THREE.Vector3(rnd(-7, 7), rnd(-6, 6), rnd(-8, 1.5)),
+    vel: base.clone(), base,
+    rot: new THREE.Euler(rnd(0, 6), rnd(0, 6), rnd(0, 6)),
+    spin: new THREE.Vector3(rnd(-1, 1), rnd(-1, 1), rnd(-1, 1)),
+    s: rnd(0.012, 0.03),
+  });
+}
+const dummy = new THREE.Object3D();
+
+// ---- Partikel bokeh / kilau
+const SP = 700, spPos = new Float32Array(SP * 3), spSeed = new Float32Array(SP);
+for (let i = 0; i < SP; i++) {
+  spPos[i * 3] = rnd(-12, 12); spPos[i * 3 + 1] = rnd(-8, 8); spPos[i * 3 + 2] = rnd(-14, 3); spSeed[i] = Math.random() * 10;
+}
+const spGeo = new THREE.BufferGeometry();
+spGeo.setAttribute("position", new THREE.BufferAttribute(spPos, 3));
+const sparkles = new THREE.Points(spGeo, new THREE.PointsMaterial({
+  size: 0.09, map: glowTex("rgba(255,220,230,1)"), transparent: true, depthWrite: false,
+  blending: THREE.AdditiveBlending, color: 0xffc2d1, sizeAttenuation: true, opacity: 0.9,
+}));
+scene.add(sparkles);
+
+// ---- Post-processing (bloom)
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.55, 0.7, 0.72);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+// ---- Interaksi
+const pointer = new THREE.Vector2();
+addEventListener("pointermove", (e) => { pointer.x = e.clientX / innerWidth * 2 - 1; pointer.y = -(e.clientY / innerHeight * 2 - 1); });
+addEventListener("deviceorientation", (e) => {
+  if (e.gamma == null) return;
+  pointer.x = THREE.MathUtils.clamp(e.gamma / 30, -1, 1);
+  pointer.y = THREE.MathUtils.clamp((45 - e.beta) / 30, -1, 1);
+});
+
+let camZ = 9, targetZ = 9, spinBoost = 0, wobble = 0, burstFlash = 0;
+function layout() {
+  const portrait = innerHeight > innerWidth;
+  heartGroup.position.y = portrait ? 1.35 : 0.9;
+  targetZ = portrait ? 10.5 : 8.5;
+}
+layout();
+
+window.Love3D = {
+  focus() { targetZ -= 1.2; spinBoost = 3; },
+  wobble() { wobble = 1; },
+  burst() {
+    spinBoost = 14; burstFlash = 1;
+    const c = heartGroup.position;
+    P.forEach((p) => {
+      p.pos.set(c.x + rnd(-0.4, 0.4), c.y + rnd(-0.4, 0.4), rnd(-0.3, 0.3));
+      const dir = new THREE.Vector3(rnd(-1, 1), rnd(-0.6, 1.2), rnd(-0.8, 0.8)).normalize();
+      p.vel.copy(dir.multiplyScalar(rnd(4, 9)));
+    });
+  },
+};
+
+addEventListener("resize", () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+  layout();
+});
+
+// detak jantung: lub-dub
+function beat(t) {
+  const p = (t % 1.15) / 1.15;
+  return Math.exp(-((p - 0.08) ** 2) / 0.0018) + 0.55 * Math.exp(-((p - 0.26) ** 2) / 0.0018);
+}
+
+const clock = new THREE.Clock();
+let ready = false;
+function tick() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+
+  camZ += (targetZ - camZ) * dt * 1.5;
+  camera.position.x += (pointer.x * 0.9 - camera.position.x) * dt * 2;
+  camera.position.y += (pointer.y * 0.6 + 0.3 - camera.position.y) * dt * 2;
+  camera.position.z = camZ;
+  camera.lookAt(0, heartGroup.position.y * 0.55, 0);
+
+  // hati utama
+  const b = beat(t);
+  spinBoost *= Math.pow(0.35, dt);
+  wobble *= Math.pow(0.05, dt);
+  burstFlash *= Math.pow(0.08, dt);
+  heart.rotation.y += dt * (0.35 + spinBoost);
+  heart.rotation.x = Math.sin(t * 0.7) * 0.12 + Math.sin(t * 30) * 0.08 * wobble;
+  heart.rotation.z = Math.sin(t * 25) * 0.1 * wobble;
+  const sc = 0.085 * (1 + b * 0.07 + burstFlash * 0.25);
+  heart.scale.setScalar(sc);
+  heartGroup.position.x = Math.sin(t * 0.5) * 0.06;
+  halo.material.opacity = 0.45 + b * 0.25 + burstFlash * 0.6;
+  halo.scale.setScalar(6 + b * 0.6 + burstFlash * 4);
+  bloom.strength = 0.55 + b * 0.15 + burstFlash * 1.2;
+  rim.intensity = 40 + b * 25;
+
+  // hati kecil
+  for (let i = 0; i < N; i++) {
+    const p = P[i];
+    p.vel.lerp(p.base, 1 - Math.pow(0.4, dt));
+    p.pos.addScaledVector(p.vel, dt);
+    p.pos.x += Math.sin(t * 0.6 + i) * dt * 0.15;
+    if (p.pos.y > 7) { p.pos.y = -7; p.pos.x = rnd(-7, 7); p.pos.z = rnd(-8, 1.5); }
+    if (Math.abs(p.pos.x) > 12 || p.pos.z > 6 || p.pos.z < -15) { p.pos.set(rnd(-7, 7), -7, rnd(-8, 1.5)); p.vel.copy(p.base); }
+    p.rot.x += p.spin.x * dt; p.rot.y += p.spin.y * dt * 1.5; p.rot.z += p.spin.z * dt * 0.5;
+    dummy.position.copy(p.pos); dummy.rotation.copy(p.rot); dummy.scale.setScalar(p.s);
+    dummy.updateMatrix(); mini.setMatrixAt(i, dummy.matrix);
+  }
+  mini.instanceMatrix.needsUpdate = true;
+
+  // kilau
+  const arr = spGeo.attributes.position.array;
+  for (let i = 0; i < SP; i++) {
+    arr[i * 3 + 1] += dt * (0.08 + (spSeed[i] % 1) * 0.12);
+    arr[i * 3] += Math.sin(t * 0.3 + spSeed[i]) * dt * 0.05;
+    if (arr[i * 3 + 1] > 8) arr[i * 3 + 1] = -8;
+  }
+  spGeo.attributes.position.needsUpdate = true;
+  sparkles.material.opacity = 0.7 + Math.sin(t * 2) * 0.15;
+
+  composer.render();
+  if (!ready) { ready = true; dispatchEvent(new Event("love3d-ready")); }
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>
